@@ -2,23 +2,50 @@ import React, { Component } from "react";
 import TaskItem from "./TaskItem";
 
 class TaskList extends Component {
-  render() {
-   
-  //  var task = this.props.taskss
-  if(this.props.tasks){
-    var  tasks  = this.props.tasks; 
-     console.log('helllo');
-    
-    var elmTasks = tasks.map((task, index) => {
-      
-        console.log(task.id);
-         console.log(task.name);
-         console.log(task.status);
-        return <TaskItem key = {task.id} index={index} task = {task.name} status ={task.status}/>
-
-    });
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterName: "",
+      filterStatus: -1
+    };
   }
-  
+  onChange = event => {
+    var target = event.target;
+    var name = event.name;
+    var value = event.value;
+    this.props.onFilter(name === 'filterName' ? value : this.state.filterName,
+    name === 'filterStatus' ? value : this.state.filterStatus
+    )
+    this.setState({
+      [name]: value
+    });
+  };
+  render() {
+    var task = this.props.taskss;
+    var { filterName, filterStatus } = this.state;
+    if (this.props.tasks) {
+      var tasks = this.props.tasks;
+      console.log("helllo");
+
+      var elmTasks = tasks.map((task, index) => {
+        console.log(task.id);
+        console.log(task.name);
+        console.log(task.status);
+
+        return (
+          <TaskItem
+            key={task.id}
+            index={index}
+            task={task}
+            status={task.status}
+            onUpdateStatus={this.props.onUpdateStatus}
+            onDelete={this.props.onDelete}
+            onUpdate={this.props.onUpdate}
+          />
+        );
+      });
+    }
+
     return (
       <table className="table table-bordered table-hover">
         <thead>
@@ -33,10 +60,21 @@ class TaskList extends Component {
           <tr>
             <td></td>
             <td>
-              <input type="text" className="form-control" />
+              <input
+                type="text"
+                className="form-control"
+                name="filterName"
+                value={filterName}
+                onChange={this.onChange}
+              />
             </td>
             <td>
-              <select className="form-control">
+              <select
+                className="form-control"
+                name="filterStatus"
+                value={filterStatus}
+                onChange={this.onChange}
+              >
                 <option value="-1">Tất Cả</option>
                 <option value="0">Ẩn</option>
                 <option value="1">Kích Hoạt</option>
@@ -44,7 +82,7 @@ class TaskList extends Component {
             </td>
             <td></td>
           </tr>
-         {elmTasks}
+          {elmTasks}
         </tbody>
       </table>
     );
