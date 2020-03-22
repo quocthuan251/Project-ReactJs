@@ -12,4 +12,5 @@ store.dispatch(sort({
     by: "name",
     value: -1
 }));
+console.log("sortAction: ");
 console.log("sortAction: ", store.getState());
